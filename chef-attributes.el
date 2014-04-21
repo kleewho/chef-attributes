@@ -1,0 +1,82 @@
+;;; chef-attributes.el -- Display all attributes of cookbook -*- lexical-binding: t -*-
+
+;; Copyright © 2014 Łukasz Klich <lukasz@apeskull.biz>
+
+;; Author: Łukasz Klich <lukasz@apeskull.biz>
+;; URL: https://github.com/kleewho/
+;; Keywords: project, convenience, chef
+;; Version: 20140421.1
+;; X-Original-Version: 0.1.0
+;; Package-Requires: ((dash "2.5.0"))
+
+;; This file is NOT part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+;;; Commentary:
+;; This library provides easy chef attributes management and navigation.
+;;; Code:
+
+(require 'dash)
+
+(defvar chef-cookbook-search-dirs '("~/.berkshelf/cookbooks/"))
+
+(defun chef-attributes-files (cookbook_path)
+  "List all attributes file in COOKBOOK_PATH."
+  (directory-files (concat cookbook_path "/attributes") t "rb"))
+
+(defun chef-list-attributes (file)
+  "List all attributes in attributes FILE."
+  (with-temp-buffer
+    (insert-file-contents file)
+    (--> (buffer-string)
+      (split-string it "[\n]")
+      (remove "" it))))
+
+(defun chef-cookbook-p (dir)
+  "Check if DIR is a cookbook or not."
+  (file-exists-p (concat dir "/metadata.rb")))
+
+(defun chef-list-installed-cookbooks (cookbook-dirs)
+  "Traverse all COOKBOOK-DIRS searching for cookbooks."
+  (->> cookbook-dirs
+    (--map (directory-files it t "[a-z]"))
+    (-flatten)
+    (-filter 'chef-cookbook-p)))
+
+(defun chef-complete-cookbook ()
+  "Complete cookbook name in minibuffer from prepared list installed cookbooks."
+  (completing-read "Which cookbook: "
+                   (chef-list-installed-cookbooks
+                    chef-cookbook-search-dirs)))
+
+(defun chef-get-attributes (cookbook)
+  "Display all attributes in COOKBOOK to user."
+  (interactive (list (chef-complete-cookbook)))
+  (message "%s" cookbook)
+  (message "attribute files %s" (chef-attributes-files cookbook)))
+
+
+(defun chef-find-file (cookbook)
+  "Open attribute file in chosen COOKBOOK."
+  (interactive (list (chef-complete-cookbook)))
+  (let ((file (ido-completing-read "Open file in cookbook: "
+                                   (chef-attributes-files cookbook))))
+    (find-file (expand-file-name file cookbook))))
+
+(provide 'chef-attributes)
+
+;;; chef-attributes.el ends here
