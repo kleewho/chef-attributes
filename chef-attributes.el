@@ -34,9 +34,9 @@
 
 (defvar chef-cookbook-search-dirs '("~/.berkshelf/cookbooks/"))
 
-(defun chef-attributes-files (cookbook_path)
-  "List all attributes file in COOKBOOK_PATH."
-  (directory-files (concat cookbook_path "/attributes") t "rb"))
+(defun chef-attributes-files (cookbook)
+  "List all attributes file in COOKBOOK."
+  (directory-files (concat cookbook "/attributes") t "rb"))
 
 (defun chef-list-attributes (file)
   "List all attributes in attributes FILE."
@@ -50,9 +50,9 @@
   "Check if DIR is a cookbook or not."
   (file-exists-p (concat dir "/metadata.rb")))
 
-(defun chef-list-installed-cookbooks (cookbook-dirs)
-  "Traverse all COOKBOOK-DIRS searching for cookbooks."
-  (->> cookbook-dirs
+(defun chef-list-installed-cookbooks (dirs)
+  "Traverse all DIRS searching for cookbooks."
+  (->> dirs
     (--map (directory-files it t "[a-z]"))
     (-flatten)
     (-filter 'chef-cookbook-p)))
