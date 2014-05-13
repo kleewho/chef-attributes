@@ -38,6 +38,32 @@
   "List all attributes file in COOKBOOK."
   (directory-files (concat cookbook "/attributes") t "rb"))
 
+(defvar chef-priorities '("default" "force_default" "normal" "override" "force_override"))
+
+(defvar chef-priorities-regexp (regexp-opt chef-priorities))
+
+(defun chef-increment-priority-number (number)
+  "Increments priority represented by NUMBER."
+  (if (= number (- (length chef-priorities) 1)) number
+    (+ number 1)))
+
+(defun chef-decrement-priority-number (number)
+  "Increments priority represented by NUMBER."
+  (if (= number 0) number
+    (- number 1)))
+
+(defun chef-change-priority-level (priority fun)
+  "Change priority PRIORITY level by FUN."
+  (elt chef-priorities (funcall fun (-find-index (-partial 'string= priority) chef-priorities))))
+
+(defun chef-increment-priority (priority)
+  "Increments priority PRIORITY by one level."
+  (chef-change-priority-level priority 'chef-increment-priority-number))
+
+(defun chef-decrement-priority (priority)
+  "Decrements priority PRIORITY by one level."
+  (chef-change-priority-level priority 'chef-decrement-priority-number))
+
 (defun chef-list-attributes (file)
   "List all attributes in attributes FILE."
   (with-temp-buffer
