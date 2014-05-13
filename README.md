@@ -10,4 +10,4 @@ Add to load-path and in *.emacs* put:
 
 ## Interactive functions
 
-*  chef-find-file
+*  chef-find-attribute-file

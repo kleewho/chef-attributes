@@ -96,7 +96,7 @@
   (message "attribute files %s" (chef-attributes-files cookbook)))
 
 
-(defun chef-find-file (cookbook)
+(defun chef-find-attribute-file (cookbook)
   "Open attribute file in chosen COOKBOOK."
   (interactive (list (chef-complete-cookbook)))
   (let ((file (ido-completing-read "Open file in cookbook: "
