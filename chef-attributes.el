@@ -104,15 +104,13 @@
 
 (defun chef-attribute-edit-line (priority-fun)
   "Change attribute priority to result of PRIORITY-FUN."
-  (when (chef-attribute-line-p "")
-    (let* ((start (point))
-           (priority (chef-attribute-priority-level (chef-read-line)))
-           (new-priority (funcall priority-fun priority))
-           (diff (- (length current-priority) (length new-priority))))
-      (goto-char (point-at-bol))
-      (chef-delete-word)
-      (insert change-to)
-      (goto-char start))))
+  (let ((line (chef-read-line)))
+    (when (chef-attribute-line-p line)
+      (let ((start (point)))
+        (goto-char (point-at-bol))
+        (chef-delete-word)
+        (insert (funcall priority-fun line))
+        (goto-char start)))))
 
 (defun chef-increase-attribute-priority ()
   "Change priority one level up."

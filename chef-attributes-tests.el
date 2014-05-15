@@ -23,11 +23,11 @@
            (buffer-string))))
     (should (string= " word line" result))))
 
-(ert-deftest chef-read-linetest ()
+(ert-deftest chef-read-line-test ()
   (let ((result
          (with-temp-buffer
            (insert "Multi line text\nin temp buffer")
-           (beginning-of-buffer)
+           (goto-char (point-min))
            (chef-read-line))))
     (should (string= "Multi line text" result))))
 
@@ -37,4 +37,9 @@
   (should (not (chef-attribute-line-p "node['chef']['attributes']"))))
 
 (ert-deftest chef-attribute-edit-line-test ()
-  ())
+  (let ((result
+         (with-temp-buffer
+           (insert "default['chef']")
+           (goto-char (point-min))
+           (chef-attribute-edit-line 'chef-increment-priority))))
+    (should (string= "force_default['chef']" result))))
