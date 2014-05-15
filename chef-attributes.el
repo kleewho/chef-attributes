@@ -121,10 +121,6 @@
     (kill-line)
     (insert new-line)))
 
-(let ((new-line (thing-at-point 'line)))
-  (kill-line)
-  (insert new-line))  (insert new-line))
-
 (defun chef-get-attributes (cookbook)
   "Display all attributes in COOKBOOK to user."
   (interactive (list (chef-complete-cookbook)))
