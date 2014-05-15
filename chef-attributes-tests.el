@@ -22,3 +22,7 @@
            (chef-delete-word)
            (buffer-string))))
     (should (string= " word line" result))))
+
+(ert-deftest chef-attribute-line-p-test ()
+  (should (chef-attribute-line-p "default['chef']['attributes']"))
+  (should (not (chef-attribute-line-p "node['chef']['attributes']"))))

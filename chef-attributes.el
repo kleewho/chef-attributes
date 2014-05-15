@@ -40,7 +40,7 @@
 
 (defvar chef-priorities '("default" "force_default" "normal" "override" "force_override"))
 
-(defvar chef-priorities-regexp (regexp-opt chef-priorities))
+(defvar chef-priorities-regexp (concat "^" (regexp-opt chef-priorities)))
 
 (defun chef-increment-priority-number (number)
   "Increments priority represented by NUMBER."
@@ -96,7 +96,7 @@
 
 (defun chef-attribute-line-p (line)
   "LINE."
-  t)
+  (string-match chef-priorities-regexp line))
 
 (defun chef-attribute-at-bol ()
   "."
