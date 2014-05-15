@@ -89,6 +89,39 @@
                    (chef-list-installed-cookbooks
                     chef-cookbook-search-dirs)))
 
+(defun chef-delete-word ()
+  "Delete word at point."
+  (delete-region (point)
+                 (progn (forward-word 1) (point))))
+
+(defun chef-attribute-line-p (line)
+  "LINE."
+  t)
+
+(defun chef-attribute-at-bol ()
+  "."
+  0)
+
+(defun chef-edit-line (change-to)
+  "CHANGE-TO."
+  (when (chef-attribute-line-p "")
+    (let ((start (point)))
+      (goto-char (chef-attribute-at-bol))
+      (chef-delete-word)
+      (insert change-to)
+      (goto-char start))))
+
+(defun chef-increase-attribute-priority ()
+  "Change priority one level up."
+  (interactive)
+  (let ((new-line (thing-at-point 'line)))
+    (kill-line)
+    (insert new-line)))
+
+(let ((new-line (thing-at-point 'line)))
+  (kill-line)
+  (insert new-line))  (insert new-line))
+
 (defun chef-get-attributes (cookbook)
   "Display all attributes in COOKBOOK to user."
   (interactive (list (chef-complete-cookbook)))
