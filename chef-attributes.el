@@ -94,19 +94,22 @@
   (delete-region (point)
                  (progn (forward-word 1) (point))))
 
+(defun chef-read-line ()
+  "Read current line."
+  (buffer-substring (point-at-bol) (point-at-eol)))
+
 (defun chef-attribute-line-p (line)
-  "LINE."
+  "Return nil if LINE don't start with attribute priority."
   (string-match chef-priorities-regexp line))
 
-(defun chef-attribute-at-bol ()
-  "."
-  0)
-
-(defun chef-edit-line (change-to)
-  "CHANGE-TO."
+(defun chef-attribute-edit-line (priority-fun)
+  "Change attribute priority to result of PRIORITY-FUN."
   (when (chef-attribute-line-p "")
-    (let ((start (point)))
-      (goto-char (chef-attribute-at-bol))
+    (let* ((start (point))
+           (priority (chef-attribute-priority-level (chef-read-line)))
+           (new-priority (funcall priority-fun priority))
+           (diff (- (length current-priority) (length new-priority))))
+      (goto-char (point-at-bol))
       (chef-delete-word)
       (insert change-to)
       (goto-char start))))

@@ -23,6 +23,18 @@
            (buffer-string))))
     (should (string= " word line" result))))
 
+(ert-deftest chef-read-linetest ()
+  (let ((result
+         (with-temp-buffer
+           (insert "Multi line text\nin temp buffer")
+           (beginning-of-buffer)
+           (chef-read-line))))
+    (should (string= "Multi line text" result))))
+
+
 (ert-deftest chef-attribute-line-p-test ()
   (should (chef-attribute-line-p "default['chef']['attributes']"))
   (should (not (chef-attribute-line-p "node['chef']['attributes']"))))
+
+(ert-deftest chef-attribute-edit-line-test ()
+  ())
