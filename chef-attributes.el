@@ -94,23 +94,46 @@
   (delete-region (point)
                  (progn (forward-word 1) (point))))
 
+(defun chef-delete-priority ()
+  "Delete priority at the beginning of line."
+  (chef-preserve-point (lambda ()
+                         (goto-char (point-at-bol))
+                         (chef-delete-word))))
+
 (defun chef-read-line ()
   "Read current line."
   (buffer-substring (point-at-bol) (point-at-eol)))
 
-(defun chef-attribute-line-p (line)
-  "Return nil if LINE don't start with attribute priority."
-  (string-match chef-priorities-regexp line))
+(defun chef-attribute-line-p ()
+  "Return nil if current line don't start with attribute priority."
+  (string-match chef-priorities-regexp (chef-read-line)))
+
+(defun chef-read-priority ()
+  "Return attribute priority level in current line."
+  (chef-preserve-point (lambda ()
+                         (goto-char (point-at-bol))
+                         (buffer-substring (point) (progn (forward-word 1) (point))))))
+
+(defun chef-insert-priority (priority)
+  "Insert PRIORITY in current line."
+  (chef-preserve-point (lambda ()
+                         (goto-char (point-at-bol))
+                         (insert priority))))
+
+(defun chef-preserve-point (f)
+  "Preserve current point when calling F."
+  (let ((start (point))
+        (res (funcall f)))
+    (goto-char start)
+    res))
 
 (defun chef-attribute-edit-line (priority-fun)
   "Change attribute priority to result of PRIORITY-FUN."
-  (let ((line (chef-read-line)))
-    (when (chef-attribute-line-p line)
-      (let ((start (point)))
-        (goto-char (point-at-bol))
-        (chef-delete-word)
-        (insert (funcall priority-fun line))
-        (goto-char start)))))
+  (when (chef-attribute-line-p)
+    (let ((start (point))
+          (current-priority (chef-read-priority)))
+      (chef-delete-priority)
+      (chef-insert-priority (funcall priority-fun current-priority)))))
 
 (defun chef-increase-attribute-priority ()
   "Change priority one level up."

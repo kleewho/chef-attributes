@@ -33,13 +33,40 @@
 
 
 (ert-deftest chef-attribute-line-p-test ()
-  (should (chef-attribute-line-p "default['chef']['attributes']"))
-  (should (not (chef-attribute-line-p "node['chef']['attributes']"))))
+  (with-temp-buffer
+    (insert "default['chef']['attributes']")
+    (should (chef-attribute-line-p)))
+  (with-temp-buffer
+    (insert "node['chef']['attributes']")
+  (should (not (chef-attribute-line-p)))))
 
 (ert-deftest chef-attribute-edit-line-test ()
-  (let ((result
-         (with-temp-buffer
-           (insert "default['chef']")
-           (goto-char (point-min))
-           (chef-attribute-edit-line 'chef-increment-priority))))
-    (should (string= "force_default['chef']" result))))
+  (with-temp-buffer
+    (insert "default['chef']")
+    (chef-attribute-edit-line 'chef-increment-priority)
+    (should (string= "force_default['chef']" (buffer-string)))))
+
+(ert-deftest chef-insert-priority-test ()
+  (with-temp-buffer
+    (chef-insert-priority "default")
+    (should (string= "default" (buffer-string))))
+  (with-temp-buffer
+    (insert "['chef']")
+    (chef-insert-priority "default")
+    (should (string= "default['chef']" (buffer-string)))))
+
+(ert-deftest chef-delete-priority-test ()
+  (with-temp-buffer
+    (insert "default['chef']")
+    (chef-delete-priority)
+    (should (string= "['chef']" (buffer-string)))))
+
+
+(ert-deftest chef-preserve-point-test ()
+  (with-temp-buffer
+    (insert "default force_default")
+    (goto-char (point-min))
+    (forward-word 1)
+    (let ((start (point)))
+      (chef-preserve-point (lambda () (goto-char (point-at-eol))))
+      (should (= start (point))))))
