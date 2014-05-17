@@ -138,9 +138,13 @@
 (defun chef-increase-attribute-priority ()
   "Change priority one level up."
   (interactive)
-  (let ((new-line (thing-at-point 'line)))
-    (kill-line)
-    (insert new-line)))
+  (chef-attribute-edit-line 'chef-increment-priority))
+
+(defun chef-decrease-attribute-priority ()
+  "Change priority one level down."
+  (interactive)
+  (chef-attribute-edit-line 'chef-decrement-priority))
+
 
 (defun chef-get-attributes (cookbook)
   "Display all attributes in COOKBOOK to user."
