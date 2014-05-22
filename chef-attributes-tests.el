@@ -36,6 +36,13 @@
     (chef-attribute-edit-line 'chef-increment-priority)
     (should (string= "force_default['chef']" (buffer-string)))))
 
+(ert-deftest chef-attribute-edit-line-when-double-word-test ()
+  (with-temp-buffer
+    (insert "force_default['chef']")
+    (chef-attribute-edit-line 'chef-increment-priority)
+    (should (string= "normal['chef']" (buffer-string)))))
+
+
 (ert-deftest chef-insert-priority-test ()
   (with-temp-buffer
     (chef-insert-priority "default")
