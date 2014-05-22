@@ -89,16 +89,11 @@
                    (chef-list-installed-cookbooks
                     chef-cookbook-search-dirs)))
 
-(defun chef-delete-word ()
-  "Delete word at point."
-  (delete-region (point)
-                 (progn (forward-word 1) (point))))
-
 (defun chef-delete-priority ()
   "Delete priority at the beginning of line."
-  (chef-preserve-point (lambda ()
-                         (goto-char (point-at-bol))
-                         (chef-delete-word))))
+  (save-excursion
+    (beginning-of-line-text)
+    (kill-word 1)))
 
 (defun chef-read-line ()
   "Read current line."
@@ -110,22 +105,15 @@
 
 (defun chef-read-priority ()
   "Return attribute priority level in current line."
-  (chef-preserve-point (lambda ()
-                         (goto-char (point-at-bol))
-                         (buffer-substring (point) (progn (forward-word 1) (point))))))
+  (save-excursion
+    (beginning-of-line-text)
+    (buffer-substring (point) (progn (forward-word 1) (point)))))
 
 (defun chef-insert-priority (priority)
   "Insert PRIORITY in current line."
-  (chef-preserve-point (lambda ()
-                         (goto-char (point-at-bol))
-                         (insert priority))))
-
-(defun chef-preserve-point (f)
-  "Preserve current point when calling F."
-  (let ((start (point))
-        (res (funcall f)))
-    (goto-char start)
-    res))
+  (save-excursion
+    (beginning-of-line-text)
+    (insert priority)))
 
 (defun chef-attribute-edit-line (priority-fun)
   "Change attribute priority to result of PRIORITY-FUN."

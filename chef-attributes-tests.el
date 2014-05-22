@@ -14,15 +14,6 @@
   (should (equal "default" (chef-decrement-priority "default")))
   (should (equal "override" (chef-decrement-priority "force_override"))))
 
-(ert-deftest chef-delete-word-test ()
-  (let ((result
-         (with-temp-buffer
-           (insert "Multi word line")
-           (goto-char (point-at-bol))
-           (chef-delete-word)
-           (buffer-string))))
-    (should (string= " word line" result))))
-
 (ert-deftest chef-read-line-test ()
   (let ((result
          (with-temp-buffer
@@ -30,7 +21,6 @@
            (goto-char (point-min))
            (chef-read-line))))
     (should (string= "Multi line text" result))))
-
 
 (ert-deftest chef-attribute-line-p-test ()
   (with-temp-buffer
@@ -60,13 +50,3 @@
     (insert "default['chef']")
     (chef-delete-priority)
     (should (string= "['chef']" (buffer-string)))))
-
-
-(ert-deftest chef-preserve-point-test ()
-  (with-temp-buffer
-    (insert "default force_default")
-    (goto-char (point-min))
-    (forward-word 1)
-    (let ((start (point)))
-      (chef-preserve-point (lambda () (goto-char (point-at-eol))))
-      (should (= start (point))))))
