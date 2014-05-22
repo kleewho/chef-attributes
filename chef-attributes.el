@@ -93,7 +93,8 @@
   "Delete priority at the beginning of line."
   (save-excursion
     (beginning-of-line-text)
-    (kill-word 1)))
+    (if (looking-at "force") (kill-word 2)
+      (kill-word 1))))
 
 (defun chef-read-line ()
   "Read current line."
@@ -107,7 +108,7 @@
   "Return attribute priority level in current line."
   (save-excursion
     (beginning-of-line-text)
-    (buffer-substring (point) (progn (forward-word 1) (point)))))
+    (symbol-at-point)))
 
 (defun chef-insert-priority (priority)
   "Insert PRIORITY in current line."
