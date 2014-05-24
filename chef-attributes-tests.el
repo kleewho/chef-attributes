@@ -45,9 +45,9 @@
 (ert-deftest chef-attribute-edit-line-ant-attr-test ()
   (with-temp-buffer
     (insert "force_default['ant']['version']        = '1.8.2'")
+    (subword-mode)
     (chef-attribute-edit-line 'chef-increment-priority)
     (should (string= "normal['ant']['version']        = '1.8.2'" (buffer-string)))))
-
 
 (ert-deftest chef-insert-priority-test ()
   (with-temp-buffer

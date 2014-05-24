@@ -93,7 +93,7 @@
   "Delete priority at the beginning of line."
   (save-excursion
     (beginning-of-line-text)
-    (if (looking-at "force") (kill-word 2)
+    (if (looking-at "force") (progn (kill-word 1) (kill-word 1))
       (kill-word 1))))
 
 (defun chef-read-line ()
