@@ -11,3 +11,5 @@ Add to load-path and in *.emacs* put:
 ## Interactive functions
 
 *  chef-find-attribute-file
+*  chef-increase-attribute-priority
+*  chef-decrease-attribute-priority
